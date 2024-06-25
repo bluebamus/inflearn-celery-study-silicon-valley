@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 ARG DEV=false
 
 COPY pyproject.toml /app/
-COPY pyproject.lock /app/
+COPY poetry.lock /app/
 COPY app /app/
 
 WORKDIR /app
