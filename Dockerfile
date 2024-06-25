@@ -9,8 +9,9 @@ COPY poetry.lock /app/
 COPY app /app/
 
 WORKDIR /app
-RUN pip install poetry
-RUN poetry install
+RUN pip install --no-cache-dir poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-root
 
 # RUN if [ $DEV = true ]; then poetry install --no-dev
 # RUN if [ $DEV = true ]; then poetry install --E redis
