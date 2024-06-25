@@ -21,6 +21,7 @@ services:
       context: .
     volumes:
       - ./app:/app
+    working_dir: /app
     command: celery --app=worker worker -l INFO
     depends_on:
       - redis
