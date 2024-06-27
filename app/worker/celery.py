@@ -25,6 +25,16 @@ app.conf.update(
 #     "worker.tasks.add": {"queue": "queue2"},
 # }
 
+app.conf.broker_transport_options = {
+    "priority_steps": list(range(10)),  # default is 4
+    "sep": ":",
+    "queue_order_strategy": "priority",
+}
+
+"""
+['celery', 'celery:1', 'celery:2', 'celery:3', 'celery:4', 'celery:5', 'celery:6', 'celery:7', 'celery:8', 'celery:9']
+"""
+
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
 # - namespace='CELERY' means all celery-related configuration keys
