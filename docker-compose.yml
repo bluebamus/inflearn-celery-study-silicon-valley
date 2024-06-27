@@ -21,7 +21,8 @@ services:
       context: .
     volumes:
       - ./app:/app
-    command: celery --app=worker worker -l INFO
+    command: celery --app=worker worker -l INFO -Q queue1
+    # command: celery --app=worker worker -l INFO
     # command: celery --app=worker worker -l INFO -P gevent  # for windows
     depends_on:
       - redis
@@ -31,6 +32,7 @@ services:
       context: standalone_celery
     volumes:
       - ./standalone_celery:/app
-    command: celery --app=main worker -l INFO
+    command: celery --app=main worker -l INFO -Q queue2
+    # command: celery --app=main worker -l INFO
     depends_on:
       - redis
