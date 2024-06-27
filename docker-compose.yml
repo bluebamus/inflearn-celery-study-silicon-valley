@@ -21,7 +21,16 @@ services:
       context: .
     volumes:
       - ./app:/app
-    working_dir: /app
     command: celery --app=worker worker -l INFO
+    # command: celery --app=worker worker -l INFO -P gevent  # for windows
+    depends_on:
+      - redis
+
+  celery-standalone:
+    build:
+      context: standalone_celery
+    volumes:
+      - ./standalone_celery:/app
+    command: celery --app=main worker -l INFO
     depends_on:
       - redis
