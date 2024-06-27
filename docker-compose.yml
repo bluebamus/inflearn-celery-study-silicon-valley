@@ -26,7 +26,7 @@ services:
     depends_on:
       - redis
 
-  celery-standalone:
+  standalone_celery:
     build:
       context: standalone_celery
     volumes:

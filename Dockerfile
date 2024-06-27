@@ -5,8 +5,7 @@ ENV PYTHONUNBUFFERED 1
 ARG DEV=false
 
 COPY pyproject.toml /app/
-COPY poetry.lock /app/
-COPY app /app/
+COPY ./app /app/
 
 WORKDIR /app
 RUN pip install --no-cache-dir poetry
