@@ -10,14 +10,23 @@ app.conf.update(
     worker_concurrency=4,  # worker 개수를 4개로 설정
 )
 
-# routing 첫번째 방법
+# task grouping
 app.conf.update(
     worker_concurrency=4,  # worker 개수를 4개로 설정
     task_routes={
-        "worker.tasks.dumb": {"queue": "queue1"},
-        "worker.tasks.add": {"queue": "queue2"},
+        "worker.tasks.dumb": {"queue": "celery"},
+        "worker.tasks.add": {"queue": "celery"},
     },
 )
+
+# # routing 첫번째 방법
+# app.conf.update(
+#     worker_concurrency=4,  # worker 개수를 4개로 설정
+#     task_routes={
+#         "worker.tasks.dumb": {"queue": "queue1"},
+#         "worker.tasks.add": {"queue": "queue2"},
+#     },
+# )
 
 # routing 두번째 방법
 # app.conf.task_routes = {
