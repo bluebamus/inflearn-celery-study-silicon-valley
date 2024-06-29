@@ -33,7 +33,7 @@ services:
       context: standalone_celery
     volumes:
       - ./standalone_celery:/app
-    command: celery --app=worker worker -l INFO -Q celery3,celery:4,celery:5
+    command: celery --app=main worker -l INFO -Q celery3,celery:4,celery:5
     # command: celery --app=main worker -l INFO -Q queue2
     # command: celery --app=main worker -l INFO
     depends_on:
