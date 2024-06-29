@@ -6,9 +6,9 @@ from celery import Celery
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
 
 app = Celery("worker")
-app.conf.update(
-    worker_concurrency=4,  # worker 개수를 4개로 설정
-)
+# app.conf.update(
+#     worker_concurrency=4,  # worker 개수를 4개로 설정
+# )
 
 # task grouping
 app.conf.update(
@@ -18,6 +18,8 @@ app.conf.update(
         "worker.tasks.add": {"queue": "celery"},
     },
 )
+
+app.conf.task_default_rate_limit = "5/m"
 
 # # routing 첫번째 방법
 # app.conf.update(
