@@ -10,18 +10,30 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST: db
     depends_on:
       - redis
 
   redis:
     image: redis:latest
+    ports:
+      - "6379:6379"
 
   celery:
     build:
       context: .
     volumes:
       - ./app:/app
-    command: celery --app=worker worker -l INFO -Q celery,celery:1,celery:2
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST: db
+    command: celery --app=worker worker -l INFO -Q celery,celery,1,celery,2
     # command: celery --app=worker worker -l INFO -Q queue1
     # command: celery --app=worker worker -l INFO
     # command: celery --app=worker worker -l INFO -P gevent  # for windows
@@ -33,7 +45,12 @@ services:
       context: standalone_celery
     volumes:
       - ./standalone_celery:/app
-    command: celery --app=main worker -l INFO -Q celery3,celery:4,celery:5
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST: db
+    command: celery --app=main worker -l INFO -Q celery,3,celery,4,celery,5
     # command: celery --app=main worker -l INFO -Q queue2
     # command: celery --app=main worker -l INFO
     depends_on:
@@ -48,3 +65,24 @@ services:
     depends_on:
       - celery
       - celery-standalone
+
+  celery-beat:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST: db
+    command: celery -A worker beat -l INFO --scheduler django_celery-beat.schedulers:DatabaseScheduler
+    depends_on:
+      - redis
+
+  db:
+    image: postgress:latest
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
