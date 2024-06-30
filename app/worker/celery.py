@@ -58,7 +58,7 @@ app.conf.broker_connection_retry_on_startup = True
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django apps.
-app.autodiscover_tasks()
+app.autodiscover_tasks(["worker", "worker.celery_tasks"])
 
 # Periodic task & Cron Table
 # app.conf.beat_schedule = {
