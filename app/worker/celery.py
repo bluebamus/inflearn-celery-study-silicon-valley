@@ -41,12 +41,12 @@ app.conf.task_default_rate_limit = "5/m"
 
 app.conf.broker_transport_options = {
     "priority_steps": list(range(10)),  # default is 4
-    # "sep": ":",
+    "sep": ":",
     "queue_order_strategy": "priority",
 }
 
 """
-['celery', 'celery,1', 'celery,2', 'celery,3', 'celery,4', 'celery,5', 'celery,6', 'celery,7', 'celery,8', 'celery,9']
+['celery', 'celery:1', 'celery:2', 'celery:3', 'celery:4', 'celery:5', 'celery:6', 'celery:7', 'celery:8', 'celery:9']
 """
 
 app.conf.broker_connection_retry_on_startup = True

@@ -37,7 +37,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: admin
       POSTGRES_HOST: db
-    command: celery --app=worker worker -l INFO -Q celery, celery,1, celery,2
+    command: celery --app=worker worker -l INFO -Q celery,celery:1,celery:2
     # command: celery --app=worker worker -l INFO -Q queue1
     # command: celery --app=worker worker -l INFO
     # command: celery --app=worker worker -l INFO -P gevent  # for windows
@@ -54,7 +54,7 @@ services:
   #     POSTGRES_USER: root
   #     POSTGRES_PASSWORD: admin
   #     POSTGRES_HOST: db
-  #   command: celery --app=main worker -l INFO -Q celery,3, celery,4, celery,5
+  #   command: celery --app=main worker -l INFO -Q celery:3,celery:4,celery:5
   #   # command: celery --app=main worker -l INFO -Q queue2
   #   # command: celery --app=main worker -l INFO
   #   depends_on:
@@ -86,7 +86,7 @@ services:
       - db
 
   db:
-    image: postgress:latest
+    image: postgres:latest
     ports:
       - "5432:5432"
     environment:
