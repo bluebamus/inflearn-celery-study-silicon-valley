@@ -46,7 +46,7 @@ app.conf.task_default_rate_limit = "5/m"
 
 app.conf.broker_transport_options = {
     "priority_steps": list(range(10)),  # default is 4
-    "sep": ":",
+    # "sep": ":",
     "queue_order_strategy": "priority",
 }
 

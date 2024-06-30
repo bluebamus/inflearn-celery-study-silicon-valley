@@ -11,14 +11,14 @@ app = Celery("worker")
 #     worker_concurrency=4,  # worker 개수를 4개로 설정
 # )
 
-app.conf.task_default_queue = "celery,3"
+app.conf.task_default_queue = "celery"
 
 # task grouping
 app.conf.update(
     worker_concurrency=4,  # worker 개수를 4개로 설정
     task_routes={
-        "worker.tasks.dumb": {"queue": "celery,3"},
-        "worker.tasks.add": {"queue": "celery,3"},
+        "worker.tasks.dumb": {"queue": "celery"},
+        "worker.tasks.add": {"queue": "celery"},
     },
 )
 
@@ -41,7 +41,7 @@ app.conf.task_default_rate_limit = "5/m"
 
 app.conf.broker_transport_options = {
     "priority_steps": list(range(10)),  # default is 4
-    "sep": ":",
+    # "sep": ":",
     "queue_order_strategy": "priority",
 }
 

@@ -19,7 +19,7 @@ services:
       sh -c "
         python manage.py makemigrations &&
         python manage.py migrate &&
-        gunicorn -b 0.0.0.0:8000 app.wsgi
+        python manage.py runserver 0.0.0.0:8000
       "
 
   redis:
@@ -37,7 +37,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: admin
       POSTGRES_HOST: db
-    command: celery --app=worker worker -l INFO -Q celery,celery:1,celery:2
+    command: celery --app=worker worker -l INFO -Q celery,celery1,celery2
     # command: celery --app=worker worker -l INFO -Q queue1
     # command: celery --app=worker worker -l INFO
     # command: celery --app=worker worker -l INFO -P gevent  # for windows
@@ -61,13 +61,14 @@ services:
   #     - redis
 
   flower:
-    image: mher/flower:master
+    image: mher/flower
     ports:
       - "5555:5555"
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
     depends_on:
       - celery
+      - db
       # - celery-standalone
 
   celery-beat:
