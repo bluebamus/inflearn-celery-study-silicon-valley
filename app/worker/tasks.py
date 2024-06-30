@@ -48,12 +48,12 @@ def p1():
     time.sleep(5)
 
 
-@shared_task(queue="celery,1")
+@shared_task(queue="celery:1")
 def p2():
     time.sleep(5)
 
 
-@shared_task(queue="celery,2")
+@shared_task(queue="celery:2")
 def p3():
     time.sleep(5)
 
