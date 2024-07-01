@@ -50,30 +50,32 @@ def my_super_task():
     #     logging.error(e)
 
 
-@app.task(queue="celery")
-def is_positive_number(num: int):
-    if num < 0:
-        raise ValueError(f"{num} is negative..")
-    return True
+# @app.task(queue="celery")
+# def is_positive_number(num: int):
+#     if num < 0:
+#         raise ValueError(f"{num} is negative..")
+#     return True
 
 
-# @app.task(bind=True, queue="celery")
-# def is_positive_number(self, num: int):
-#     try:
-#         if num < 0:
-#             raise ValueError(f"{num} is negative..")
-#         return True
-#     except Exception as e:
-#         traceback_str = traceback.format_exc()
-#         handle_error.apply_async(args=[self.request.id, str(e), traceback_str])
+@app.task(bind=True, queue="celery")
+def is_positive_number(self, num: int):
+    try:
+        if num < 0:
+            raise ValueError(f"{num} is negative..")
+        return True
+    except Exception as e:
+        traceback_str = traceback.format_exc()
+        handle_error.apply_async(args=[self.request.id, str(e), traceback_str])
 
-# @app.task(queue="dlq")
-# def handle_error(task_id, exception, traceback_str):
-#     print(f"task_id: {task_id}")
-#     print(f"exception: {exception}")
-#     print(f"traceback_str: {traceback_str}")
 
-# # @app.task(queue="celery", time_limit=5)
+@app.task(queue="dlq")
+def handle_error(task_id, exception, traceback_str):
+    print(f"task_id: {task_id}")
+    print(f"exception: {exception}")
+    print(f"traceback_str: {traceback_str}")
+
+
+# @app.task(queue="celery", time_limit=5)
 # @app.task(queue="celery")
 # def long_running_job():
 #     time.sleep(10)

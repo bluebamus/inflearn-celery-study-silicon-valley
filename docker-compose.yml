@@ -37,7 +37,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: admin
       POSTGRES_HOST: db
-    command: celery --app=worker worker -l INFO -Q celery,celery1,celery2
+    command: celery --app=worker worker -l INFO -Q celery,celery1,celery2,dlq
     # command: celery --app=worker worker -l INFO -Q queue1
     # command: celery --app=worker worker -l INFO
     # command: celery --app=worker worker -l INFO -P gevent  # for windows
