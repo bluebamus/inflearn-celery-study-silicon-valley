@@ -48,3 +48,55 @@ def my_super_task():
     raise IOError("File X does not exists")
     # except IOError as e:
     #     logging.error(e)
+
+
+@app.task(queue="celery")
+def is_positive_number(num: int):
+    if num < 0:
+        raise ValueError(f"{num} is negative..")
+    return True
+
+
+# @app.task(bind=True, queue="celery")
+# def is_positive_number(self, num: int):
+#     try:
+#         if num < 0:
+#             raise ValueError(f"{num} is negative..")
+#         return True
+#     except Exception as e:
+#         traceback_str = traceback.format_exc()
+#         handle_error.apply_async(args=[self.request.id, str(e), traceback_str])
+
+# @app.task(queue="dlq")
+# def handle_error(task_id, exception, traceback_str):
+#     print(f"task_id: {task_id}")
+#     print(f"exception: {exception}")
+#     print(f"traceback_str: {traceback_str}")
+
+# # @app.task(queue="celery", time_limit=5)
+# @app.task(queue="celery")
+# def long_running_job():
+#     time.sleep(10)
+#     print("finished long_running_job")
+
+
+# https://docs.celeryq.dev/en/stable/userguide/canvas.html#group-results
+def run_group():
+    g = group(
+        is_positive_number.s(2), is_positive_number.s(4), is_positive_number.s(-1)
+    )  # type: ignore
+    result = g.apply_async()
+
+    print(f"ready: {result.ready()}")  # have all subtasks completed?
+    print(f"successful: {result.successful()}")  # were all subtasks successful?
+
+    try:
+        result.get()
+    except ValueError as e:
+        print(e)
+
+    print(f"ready: {result.ready()}")  # have all subtasks completed?
+    print(f"successful: {result.successful()}")  # were all subtasks successful?
+
+    for elem in result:
+        print(elem.status)
