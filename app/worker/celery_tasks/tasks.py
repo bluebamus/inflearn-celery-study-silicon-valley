@@ -127,3 +127,26 @@ def simulating_link():
     print(result.get())
     # child result
     print(result.children[0].get())
+
+
+# Define signal handlers using sender
+@task_prerun.connect(sender=add)
+def task_prerun_handler_add(sender, task_id, task, args, kwargs, **kwargs_extra):
+    print(f"Task {task_id} it about to run : {task.name} with args {args}")
+
+
+@task_postrun.connect(sender=add)
+def task_postrun_handler_add(
+    sender, task_id, task, args, kwargs, retval, state, **kwargs_extra
+):
+    print(f"Task {task_id} has completed : {task.name} with result {retval}")
+
+
+# simulating task signal
+def simulating_task_signal():
+    # call the celery task asynchronously
+    result = add.delay(2, 3)  # type: ignore
+
+    # Get the result of the task
+    final_result = result.get()
+    print("Final Result:", final_result)

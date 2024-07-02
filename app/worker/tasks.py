@@ -1,6 +1,6 @@
 import time
 from celery import shared_task
-from celery.signals import task_prerun, task_postrun
+from celery.signals import task_prerun, task_postrun, task_failure
 
 # @shared_task
 # def add(x, y):
@@ -80,23 +80,50 @@ def task_postrun_handler(
     print(f"Task {task_id} has completed : {task.name} with result {retval}")
 
 
-# Define signal handlers using sender
-@task_prerun.connect(sender=add)
-def task_prerun_handler_add(sender, task_id, task, args, kwargs, **kwargs_extra):
-    print(f"Task {task_id} it about to run : {task.name} with args {args}")
+# Synchronous Task
+def sync_task():
+    result = sleep_task.apply_async()  # type: ignore
+    print("Waiting ...")
+    print(result.get())
 
 
-@task_postrun.connect(sender=add)
-def task_postrun_handler_add(
-    sender, task_id, task, args, kwargs, retval, state, **kwargs_extra
+# Asynchronous Task
+def async_task():
+    result = sleep_task.apply_async()  # type: ignore
+    print("Not waiting ...")
+    print(result.task_id)
+
+
+# Define signal handlers
+# @task_prerun.connect(sender=add)
+# def task_prerun_handler(sender, task_id, task, args, kwargs, **kwargs_extra):
+#     print(f"Task {task_id} is about to run: {task.name} with args {args}")
+
+
+# @task_postrun.connect(sender=add)
+# def task_postrun_handler(
+#     sender, task_id, task, args, kwargs, retval, state, **kwargs_extra
+# ):
+#     print(f"Task {task_id} has completed: {task.name} with result {retval}")
+
+
+@task_failure.connect(sender=add)
+def task_failure_handler(
+    sender, task_id, exception, args, kwargs, traceback, einfo, **kwargs_extra
 ):
-    print(f"Task {task_id} has completed : {task.name} with result {retval}")
+    print(f"Task {task_id} has failed: {sender.name} with exception {exception}")
+    task_failure_clean_up.delay(task_id=task_id)  # type: ignore
+
+
+@shared_task(queue="celery")
+def task_failure_clean_up(task_id, *args, **kwargs):
+    print(f"Task {task_id} clean up process has been started")
 
 
 # simulating task signal
 def simulating_task_signal():
-    # call the celery task asynchronously
-    result = add.delay(2, 3)  # type: ignore
+    # Call the Celery task asynchronously
+    result = add.delay(2, "error")  # type: ignore
 
     # Get the result of the task
     final_result = result.get()
