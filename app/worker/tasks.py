@@ -67,19 +67,6 @@ def print_result(x, y, msg=None):
     return total
 
 
-# Define signal handlers
-@task_prerun.connect
-def task_prerun_handler(sender, task_id, task, args, kwargs, **kwargs_extra):
-    print(f"Task {task_id} it about to run : {task.name} with args {args}")
-
-
-@task_postrun.connect
-def task_postrun_handler(
-    sender, task_id, task, args, kwargs, retval, state, **kwargs_extra
-):
-    print(f"Task {task_id} has completed : {task.name} with result {retval}")
-
-
 # Synchronous Task
 def sync_task():
     result = sleep_task.apply_async()  # type: ignore
@@ -105,6 +92,19 @@ def async_task():
 #     sender, task_id, task, args, kwargs, retval, state, **kwargs_extra
 # ):
 #     print(f"Task {task_id} has completed: {task.name} with result {retval}")
+
+
+# Define signal handlers
+@task_prerun.connect
+def task_prerun_handler(sender, task_id, task, args, kwargs, **kwargs_extra):
+    print(f"Task {task_id} it about to run : {task.name} with args {args}")
+
+
+@task_postrun.connect
+def task_postrun_handler(
+    sender, task_id, task, args, kwargs, retval, state, **kwargs_extra
+):
+    print(f"Task {task_id} has completed : {task.name} with result {retval}")
 
 
 @task_failure.connect(sender=add)
